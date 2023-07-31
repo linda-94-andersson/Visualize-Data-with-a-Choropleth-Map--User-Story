@@ -108,13 +108,13 @@ function App() {
 
   const handleMouseOver = (event) => {
     const tooltip = d3.select("#tooltip");
-    const d = d3.select(event.target).data()[0];
+    const fips = event.target.getAttribute("data-fips");
+    const education = event.target.getAttribute("data-education");
     tooltip.style("display", "inline");
     tooltip.style("opacity", 0.9);
     tooltip.style("left", event.pageX + 10 + "px");
     tooltip.style("top", event.pageY + 10 + "px");
-    console.log(d, " this is d")
-    tooltip.html(`FIPS ${d.dataFips}: Education ${d.dataEducation}`);
+    tooltip.html(`FIPS ${fips}: Education ${education}%`);
   };
 
   const handleMouseOut = () => {
