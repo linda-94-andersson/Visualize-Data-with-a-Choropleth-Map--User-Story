@@ -4,7 +4,6 @@
 ## Skills used for this project
 * React
 * D3
-* Typescript
 * Javascript
 * Axios
 * CSS
