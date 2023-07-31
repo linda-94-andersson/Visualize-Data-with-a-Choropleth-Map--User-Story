@@ -123,25 +123,43 @@ function App() {
       );
 
     // Create the tooltip
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("id", "tooltip")
-      .style("position", "absolute")
-      .style("opacity", 0);
+    const tooltip = svg.append("g").attr("id", "tooltip").style("opacity", 0);
+
+    // Append a rectangle to act as the background of the tooltip
+    tooltip
+      .append("rect")
+      .attr("width", 100)
+      .attr("height", 50)
+      .attr("fill", "white")
+      .attr("stroke", "black");
+
+    // Append text elements to display the tooltip content
+    tooltip
+      .append("text")
+      .attr("x", 10)
+      .attr("y", 20)
+      .attr("font-size", "14px")
+      .text("FIPS: ");
+
+    tooltip
+      .append("text")
+      .attr("x", 10)
+      .attr("y", 40)
+      .attr("font-size", "14px")
+      .text("Education: ");
   };
 
-  const handleMouseOver = (event, d) => {
+  const handleMouseOver = (event) => {
     const tooltip = d3.select("#tooltip");
     tooltip.style("opacity", 0.9);
     tooltip
-      .html(
-        `FIPS: ${d3.select(event.target).attr("data-fips")}<br/>Education: ${d3
-          .select(event.target)
-          .attr("data-education")}%`
-      )
-      .style("left", event.pageX + 10 + "px")
-      .style("top", event.pageY + 10 + "px");
+      .attr("transform", `translate(${event.pageX + 10}, ${event.pageY + 10})`)
+      .select("text:nth-child(2)")
+      .text(`FIPS: ${d3.select(event.target).attr("data-fips")}`);
+
+    tooltip
+      .select("text:nth-child(3)")
+      .text(`Education: ${d3.select(event.target).attr("data-education")}%`);
   };
 
   const handleMouseOut = () => {
@@ -151,6 +169,7 @@ function App() {
   return (
     <div>
       <svg id="choropleth"></svg>
+      <div id="tooltip" style={{ display: "none" }}></div>
     </div>
   );
 }
