@@ -123,7 +123,17 @@ function App() {
       );
 
     // Create the tooltip
-    const tooltip = svg.append("g").attr("id", "tooltip").style("opacity", 0);
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("id", "tooltip")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("padding", "10px")
+      .style("background-color", "rgba(255, 255, 255, 0.9)")
+      .style("color", "black")
+      .style("box-shadow", "0px 0px 10px rgba(0, 0, 0, 0.1)");
 
     // Append a rectangle to act as the background of the tooltip
     tooltip
@@ -155,7 +165,7 @@ function App() {
     tooltip
       .attr("transform", `translate(${event.pageX + 10}, ${event.pageY + 10})`)
       .select("text:nth-child(2)")
-      .text(`FIPS: ${d3.select(event.target).attr("data-fips")}`);
+      .text(`FIPS: ${d3.select(event.target).attr("data-fips")} `);
 
     tooltip
       .select("text:nth-child(3)")
@@ -169,7 +179,6 @@ function App() {
   return (
     <div>
       <svg id="choropleth"></svg>
-      <div id="tooltip" style={{ display: "none" }}></div>
     </div>
   );
 }
