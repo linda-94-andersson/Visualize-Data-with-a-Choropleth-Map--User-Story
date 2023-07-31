@@ -38,7 +38,7 @@ function App() {
     // Constants for the dimensions of the SVG and the margins
     const margin = { top: 80, right: 25, bottom: 30, left: 60 };
     const width = 1000 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
+    const height = 750 - margin.top - margin.bottom;
 
     // Create scales for color and legend
     const colorScale = d3
@@ -81,14 +81,13 @@ function App() {
         "data-education",
         (d) => educationData.find((e) => e.fips === d.id).bachelorsOrHigher
       )
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut);
+      .on("mouseover", handleMouseOver);
 
     // Create the legend
     const legend = svg
       .append("g")
       .attr("id", "legend")
-      .attr("transform", `translate(${width / 4}, ${height + 40})`);
+      .attr("transform", `translate(${width / 4}, ${height - 40})`);
 
     const legendAxis = d3
       .axisBottom(legendScale)
@@ -121,14 +120,12 @@ function App() {
     tooltip.html(`FIPS ${fips}: Education ${education}%`);
   };
 
-  const handleMouseOut = () => {
-    d3.select("#tooltip").style("display", "none");
-  };
-
   return (
     <div>
-      <h1 id="title">United States Educational Attainment</h1>
-      <p id="description">
+      <h1 id="title" style={{ margin: 0 }}>
+        United States Educational Attainment
+      </h1>
+      <p id="description" style={{ marginBottom: 0 }}>
         {`Percentage of adults age 25 and older with a bachelor's degree or higher
         (2010-2014)`}
       </p>
