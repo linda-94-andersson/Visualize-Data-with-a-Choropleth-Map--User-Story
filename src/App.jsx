@@ -23,11 +23,16 @@ function App() {
         axios.spread((educationResponse, countyResponse) => {
           setEducationData(educationResponse.data);
           setCountyData(countyResponse.data);
-          createChoroplethMap(educationResponse.data, countyResponse.data);
         })
       )
       .catch((error) => console.error(error));
   }, []);
+
+  useEffect(() => {
+    if (educationData.length > 0 && countyData.objects) {
+      createChoroplethMap(educationData, countyData);
+    }
+  }, [educationData, countyData]);
 
   const createChoroplethMap = (educationData, countyData) => {
     // Constants for the dimensions of the SVG and the margins
