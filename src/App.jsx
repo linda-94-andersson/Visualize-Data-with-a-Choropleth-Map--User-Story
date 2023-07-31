@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
@@ -7,7 +7,6 @@ import "./App.css";
 function App() {
   const [educationData, setEducationData] = useState([]);
   const [countyData, setCountyData] = useState([]);
-  const educationProRef = useRef(null);
 
   useEffect(() => {
     // Fetch the education data and county data using Axios
@@ -24,7 +23,6 @@ function App() {
         axios.spread((educationResponse, countyResponse) => {
           setEducationData(educationResponse.data);
           setCountyData(countyResponse.data);
-          educationProRef.current = educationResponse.data.dataEducation;
           createChoroplethMap(educationResponse.data, countyResponse.data);
         })
       )
@@ -114,6 +112,7 @@ function App() {
     tooltip.style("opacity", 0.9);
     tooltip.style("left", event.pageX + 10 + "px");
     tooltip.style("top", event.pageY + 10 + "px");
+    tooltip.attr("data-education", education);
     tooltip.html(`FIPS ${fips}: Education ${education}%`);
   };
 
