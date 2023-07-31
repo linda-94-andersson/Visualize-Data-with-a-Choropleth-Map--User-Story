@@ -1,5 +1,5 @@
 ## Deployment
-* WIP
+* https://linda-andersson-choropleth-map.netlify.app/
 
 ## Skills used for this project
 * React
