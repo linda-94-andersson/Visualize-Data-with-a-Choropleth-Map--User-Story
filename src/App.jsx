@@ -81,7 +81,8 @@ function App() {
         "data-education",
         (d) => educationData.find((e) => e.fips === d.id).bachelorsOrHigher
       )
-      .on("mouseover", handleMouseOver);
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
 
     // Create the legend
     const legend = svg
@@ -118,6 +119,10 @@ function App() {
     tooltip.style("top", event.pageY + 10 + "px");
     tooltip.attr("data-education", education);
     tooltip.html(`FIPS ${fips}: Education ${education}%`);
+  };
+
+  const handleMouseOut = () => {
+    d3.select("#tooltip").style("display", "none");
   };
 
   return (
