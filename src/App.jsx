@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
@@ -7,6 +7,7 @@ import "./App.css";
 function App() {
   const [educationData, setEducationData] = useState([]);
   const [countyData, setCountyData] = useState([]);
+  const educationProRef = useRef(null);
 
   useEffect(() => {
     // Fetch the education data and county data using Axios
@@ -23,6 +24,7 @@ function App() {
         axios.spread((educationResponse, countyResponse) => {
           setEducationData(educationResponse.data);
           setCountyData(countyResponse.data);
+          educationProRef.current = educationResponse.data.dataEducation;
           createChoroplethMap(educationResponse.data, countyResponse.data);
         })
       )
@@ -102,83 +104,32 @@ function App() {
       .attr("fill", (d) => d);
 
     legend.call(legendAxis);
-
-    // Create the title and description
-    svg
-      .append("text")
-      .attr("id", "title")
-      .attr("x", width / 2)
-      .attr("y", -30)
-      .attr("text-anchor", "middle")
-      .text("United States Educational Attainment");
-
-    svg
-      .append("text")
-      .attr("id", "description")
-      .attr("x", width / 2)
-      .attr("y", -10)
-      .attr("text-anchor", "middle")
-      .text(
-        "Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)"
-      );
-
-    // Create the tooltip
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("id", "tooltip")
-      .style("opacity", 0)
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("padding", "10px")
-      .style("background-color", "rgba(255, 255, 255, 0.9)")
-      .style("color", "black")
-      .style("box-shadow", "0px 0px 10px rgba(0, 0, 0, 0.1)");
-
-    // Append a rectangle to act as the background of the tooltip
-    tooltip
-      .append("rect")
-      .attr("width", 100)
-      .attr("height", 50)
-      .attr("fill", "white")
-      .attr("stroke", "black");
-
-    // Append text elements to display the tooltip content
-    tooltip
-      .append("text")
-      .attr("x", 10)
-      .attr("y", 20)
-      .attr("font-size", "14px")
-      .text("FIPS: ");
-
-    tooltip
-      .append("text")
-      .attr("x", 10)
-      .attr("y", 40)
-      .attr("font-size", "14px")
-      .text("Education: ");
   };
 
   const handleMouseOver = (event) => {
     const tooltip = d3.select("#tooltip");
+    const d = d3.select(event.target).data()[0];
+    tooltip.style("display", "inline");
     tooltip.style("opacity", 0.9);
-    tooltip
-      .attr("transform", `translate(${event.pageX + 10}, ${event.pageY + 10})`)
-      .select("text:nth-child(2)")
-      .text(`FIPS: ${d3.select(event.target).attr("data-fips")} `);
-
-    tooltip
-      .select("text:nth-child(3)")
-      .text(`Education: ${d3.select(event.target).attr("data-education")}%`);
+    tooltip.style("left", event.pageX + 10 + "px");
+    tooltip.style("top", event.pageY + 10 + "px");
+    console.log(d, " this is d")
+    tooltip.html(`FIPS ${d.dataFips}: Education ${d.dataEducation}`);
   };
 
   const handleMouseOut = () => {
-    d3.select("#tooltip").style("opacity", 0);
+    d3.select("#tooltip").style("display", "none");
   };
 
   return (
     <div>
+      <h1 id="title">United States Educational Attainment</h1>
+      <p id="description">
+        {`Percentage of adults age 25 and older with a bachelor's degree or higher
+        (2010-2014)`}
+      </p>
       <svg id="choropleth"></svg>
+      <div id="tooltip" style={{ display: "none" }}></div>
     </div>
   );
 }
